@@ -1,0 +1,28 @@
+name: My first Python package
+on:
+  release:
+    types: [created]
+jobs:
+  deploy:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest,macos-11,ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          pip install twine
+      - name: Build package
+        run: python -m build
+      - name: Publish package
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ pypi-AgEIcHlwaS5vcmcCJGM2ZmU1MmI0LTU3ZGEtNDZkZC1iZGEzLWM1YjIxYjcxZTdlNQACKlszLCJlZjMyNjBjMS0wMTk0LTRmZGYtOTg3Zi01YzBiZTZmNWViZTgiXQAABiDnKBaPoSPFGh5g5BcqkpEw9Keoja98O5PJBD9lsAztKA }}
+        run: twine upload dist/*
